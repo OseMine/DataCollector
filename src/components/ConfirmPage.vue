@@ -1,7 +1,7 @@
 <template>
     <div>
-      <h1>Order Confirmation</h1>
-      <p>Your order number is: {{ orderNumber }}</p>
+      <h1>Order placed</h1>
+      <p>Your number with number with number {{ orderNumber }} has been successfully placed.</p>
     </div>
   </template>
   
