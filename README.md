@@ -1,5 +1,5 @@
-# number-display
-
+# DataCollector
+This is a Vue App, whcih can be uses to sort out / get Data from scam emails
 ## Project setup
 ```
 yarn install

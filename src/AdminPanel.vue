@@ -1,0 +1,186 @@
+<template>
+    <div v-if="isAuthenticated" id="admin-panel">
+      <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p>Willkommen im geschützten Adminbereich!</p>
+        <button @click="logout">Ausloggen</button>
+  
+        <div class="email-table">
+          <h2>Scammer E-Mails</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>E-Mail</th>
+                <th>Morsecode (Bestellnummer)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(entry, index) in emailEntries" :key="index" @click="selectEntry(entry)">
+                <td>{{ entry.email }}</td>
+                <td>{{ entry.morseCode }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button @click="addEntry">Neuer Eintrag</button>
+        </div>
+  
+        <!-- Slide-Up Panel -->
+        <div v-if="selectedEntry" class="slideup-panel">
+          <h3>Scammer Details</h3>
+          <p><strong>E-Mail:</strong> {{ selectedEntry.email }}</p>
+          <p><strong>Fake Bestellnummer (Morsecode):</strong> {{ selectedEntry.morseCode }}</p>
+          <button @click="sendEmail(selectedEntry.email, selectedEntry.morseCode)">Fake URL senden</button>
+        </div>
+  
+        <!-- New Entry Form -->
+        <div v-if="addingEntry" class="new-entry-form">
+          <h3>Neuen Eintrag erstellen</h3>
+          <input v-model="newEmail" placeholder="Scammer E-Mail" />
+          <button @click="createNewEntry">Eintrag erstellen</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Login Form -->
+    <div v-else class="login">
+      <h2>Admin Login</h2>
+      <input v-model="password" type="password" placeholder="Passwort" />
+      <button @click="login">Einloggen</button>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        isAuthenticated: false,
+        password: '',
+        emailEntries: [],
+        selectedEntry: null,
+        addingEntry: false,
+        newEmail: ''
+      };
+    },
+    methods: {
+      login() {
+        // Einfaches Passwort (kann verbessert werden)
+        if (this.password === 'admin123') {
+          this.isAuthenticated = true;
+        } else {
+          alert('Falsches Passwort!');
+        }
+      },
+      logout() {
+        this.isAuthenticated = false;
+      },
+      translateToMorse(text) {
+        const morseCodeMap = {
+          'a': '12', 'b': '2111', 'c': '2121', 'd': '211', 'e': '1',
+          'f': '1121', 'g': '221', 'h': '1111', 'i': '11', 'j': '1222',
+          'k': '212', 'l': '1211', 'm': '22', 'n': '21', 'o': '222',
+          'p': '1221', 'q': '2212', 'r': '121', 's': '111', 't': '2',
+          'u': '112', 'v': '1112', 'w': '122', 'x': '2112', 'y': '2122',
+          'z': '2211', '1': '12222', '2': '11222', '3': '11122',
+          '4': '11112', '5': '11111', '6': '21111', '7': '22111',
+          '8': '22211', '9': '22221', '0': '22222', '': '0', '.': '00', '@': '000'
+        };
+        let morseCode = '';
+        for (let char of text.toLowerCase()) {
+          morseCode += morseCodeMap[char] ? morseCodeMap[char] + '0' : '0';
+        }
+        return morseCode.trim();
+      },
+      selectEntry(entry) {
+        this.selectedEntry = entry;
+      },
+      addEntry() {
+        this.addingEntry = true;
+      },
+      createNewEntry() {
+        if (this.newEmail) {
+          const morseCode = this.translateToMorse(this.newEmail);
+          const newEntry = {
+            email: this.newEmail,
+            morseCode: morseCode // Fake Bestellnummer ist der Morsecode
+          };
+          this.emailEntries.push(newEntry);
+          this.newEmail = '';
+          this.addingEntry = false;
+        } else {
+          alert('Bitte geben Sie eine E-Mail ein!');
+        }
+      },
+      sendEmail(email, morseCode) {
+        const fakeUrl = `https://fake-orders.com/confirm?o=${morseCode}`;
+        alert(`Fake URL an ${email} gesendet: ${fakeUrl}`);
+        // Hier könnte die E-Mail-API-Logik hinzugefügt werden
+      }
+    }
+  };
+  </script>
+  
+  <style scoped>
+  #admin-panel {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 60px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f4f8;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    color: #3498db;
+  }
+  .email-table {
+    margin-top: 40px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #111827;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #374151;
+  }
+  .slideup-panel {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .new-entry-form {
+    margin-top: 40px;
+  }
+  .login {
+    text-align: center;
+    margin-top: 60px;
+  }
+  input {
+    padding: 10px;
+    margin-top: 10px;
+    width: 300px;
+  }
+  </style>
+  

@@ -1,0 +1,71 @@
+<template>
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Willkommen im geschützten Adminbereich!</p>
+      <button @click="logout">Ausloggen</button>
+  
+      <div class="morse-translator">
+        <h2>Text zu Morsecode Übersetzer</h2>
+        <input type="text" v-model="textInput" placeholder="Gib Text ein">
+        <button @click="translateToMorse">Übersetzen</button>
+        <div class="output">{{ morseOutput }}</div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    name: 'AdminPage',
+    data() {
+      return {
+        textInput: '',
+        morseOutput: ''
+      };
+    },
+    methods: {
+      logout() {
+        localStorage.removeItem('authToken')
+        this.$router.push('/login')
+      },
+      translateToMorse() {
+        const morseCodeMap = {
+          'a': '12', 'b': '2111', 'c': '2121', 'd': '211', 'e': '1', 
+          'f': '1121', 'g': '221', 'h': '1111', 'i': '11', 'j': '1222', 
+          'k': '212', 'l': '1211', 'm': '22', 'n': '21', 'o': '222', 
+          'p': '1221', 'q': '2212', 'r': '121', 's': '111', 't': '2', 
+          'u': '112', 'v': '1112', 'w': '122', 'x': '2112', 'y': '2122', 
+          'z': '2211', '1': '12222', '2': '11222', '3': '11122', 
+          '4': '11112', '5': '11111', '6': '21111', '7': '22111', 
+          '8': '22211', '9': '22221', '0': '22222', '': '0', '.': '00', '@' : '000'
+        };
+        let morseCode = '';
+        for (let char of this.textInput.toLowerCase()) {
+          morseCode += morseCodeMap[char] ? morseCodeMap[char] + '0' : '0';
+        }
+        this.morseOutput = morseCode.trim();
+      }
+    }
+  }
+  </script>
+  
+  <style scoped>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 50px;
+  }
+  input, button {
+    margin-top: 20px;
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+  }
+  .output {
+    margin-top: 20px;
+    font-size: 18px;
+    color: blue;
+  }
+  .morse-translator {
+    margin-top: 40px;
+  }
+  </style>
+  
