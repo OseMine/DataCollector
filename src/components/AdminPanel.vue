@@ -45,13 +45,14 @@
   <!-- Login Form -->
   <div v-else class="login">
     <h2>Admin Login</h2>
-    <input v-model="password" type="password" placeholder="Passwort" />
+    <input v-model="password" type="password" placeholder="Passwort" @change="login"/>
     <button @click="login">Einloggen</button>
   </div>
 </template>
 
 <script>
 import { db } from '../firebase'; // Der Pfad sollte korrekt sein
+// eslint-disable-next-line no-unused-vars
 import { collection, addDoc, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
 
